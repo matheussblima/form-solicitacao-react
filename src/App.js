@@ -34,7 +34,17 @@ export default class Example extends React.Component {
 
     const qtdItens = this.state.qtdItens;
     const descricaoitems = this.state.descricaoitems;
+    let tabelRowItensSolicitados = "";
 
+    for(let i = 0; i < this.state.qtdItens.length; i++) {
+
+      tabelRowItensSolicitados = tabelRowItensSolicitados +  
+      "<tr>" +
+        "<td>" +  qtdItens[i] + "</td>" +
+        "<td>" +  descricaoitems[i] + "</td>" +
+      "</tr>";
+
+    }
 
 
     const message = 
@@ -100,10 +110,7 @@ export default class Example extends React.Component {
         "<td><b>Quantidade</b></td>" +
         "<td><b>Descrição</b></td>" +
       "</tr>" +
-      "<tr>" +
-        "<td>" +  qtdItens + "</td>" +
-        "<td>" +  descricaoitems + "</td>" +
-      "</tr>" +
+      tabelRowItensSolicitados +
     "</table>";
 
     console.log(message);
