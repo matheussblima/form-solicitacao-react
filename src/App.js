@@ -16,6 +16,120 @@ export default class Example extends React.Component {
     }
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    const nomeRequsitante = document.getElementById('nomeRequsitante').value;
+    const empresaRequsitante = document.getElementById('empresaRequsitante').value;
+    const telefoneRequsitante = document.getElementById('telefoneRequsitante').value;
+    const emailRequsitante = document.getElementById('emailRequsitante').value;
+    const ramalRequsitante = document.getElementById('ramalRequsitante').value;
+
+    const nomeAprovador = document.getElementById('nomeAprovador').value;
+    const emailAprovador = document.getElementById('emailAprovador').value;
+    const coletorAprovador = document.getElementById('coletorAprovador').value;
+
+    const plantaEmprestimo = document.getElementById('plantaEmprestimo').value;
+    const localEmprestimo = document.getElementById('localEmprestimo').value;
+    const dataEmprestimo = document.getElementById('dataEmprestimo').value;
+
+    const qtdItens = this.state.qtdItens;
+    const descricaoitems = this.state.descricaoitems;
+
+
+
+    const message = 
+    "<h3>Dados do Requisitante</h3>" +
+    "<table>" +
+      "<tr>" +
+        "<td>Nome:</td>" +
+        "<td>" +  nomeRequsitante + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Empresa:</td>" +
+        "<td>" +  empresaRequsitante + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Telefone:</td>" +
+        "<td>" +  telefoneRequsitante + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Email:</td>" +
+        "<td>" +  emailRequsitante + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Ramal:</td>" +
+        "<td>" +  ramalRequsitante + "</td>" +
+      "</tr>" +
+    "</table>" + 
+
+    "<h3>Dados do Aprovador Braskem</h3>" +
+    "<table>" +
+      "<tr>" +
+        "<td>Nome:</td>" +
+        "<td>" +  nomeAprovador + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Email:</td>" +
+        "<td>" +  emailAprovador + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Coletor:</td>" +
+        "<td>" +  coletorAprovador + "</td>" +
+      "</tr>" +
+    "</table>" + 
+    
+    "<h3>Local aplicação e prazo do empréstimo</h3>" +
+    "<table>" +
+      "<tr>" +
+        "<td>Planta:</td>" +
+        "<td>" +  plantaEmprestimo + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Local:</td>" +
+        "<td>" +  localEmprestimo + "</td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>Data:</td>" +
+        "<td>" +  dataEmprestimo + "</td>" +
+      "</tr>" +
+    "</table>" +
+    
+    "<h3>Dados dos Itens solicitados</h3>" +
+    "<table>" +
+      "<tr>" +
+        "<td><b>Quantidade</b></td>" +
+        "<td><b>Descrição</b></td>" +
+      "</tr>" +
+      "<tr>" +
+        "<td>" +  qtdItens + "</td>" +
+        "<td>" +  descricaoitems + "</td>" +
+      "</tr>" +
+    "</table>";
+
+    console.log(message);
+
+   axios({
+        method: "POST", 
+        url:"http://localhost:3002/send", 
+        data: {
+            name: "Matheus",   
+            email: "matheussblima@gmail.com",  
+            message: message
+        }
+    }).then((response)=>{
+        if (response.data.msg === 'success'){
+            alert("Mensagem enviada"); 
+            this.resetForm();
+        }else if(response.data.msg === 'fail'){
+            alert("Erro ao enviar a mesagem");
+        }
+    }); 
+  }
+
+  resetForm(){
+    document.getElementById('form-cadastro').reset();
+  }
+
 
   clickButtonAddItem() {
     const { qtdItensSolicitados, descricaoItensSolicitados, qtdItens, descricaoitems } = this.state;
@@ -74,7 +188,7 @@ export default class Example extends React.Component {
                 Cadastro de solicitação de item PV-10
             </h4>
             </CardHeader>
-          <Form className="form-container">
+          <Form className="form-container"  id="form-cadastro"  onSubmit={this.handleSubmit.bind(this)} method="POST">
 
             <h3>Dados do Requisitante</h3>
 
@@ -95,7 +209,7 @@ export default class Example extends React.Component {
               <Input type="email" name="emailRequisitante" id="emailRequsitante" />
             </FormGroup>
             <FormGroup>
-              <Label for="ramalRequsitante">Email</Label>
+              <Label for="ramalRequsitante">Ramal</Label>
               <Input type="number" name="ramalRequisitante" id="ramalRequsitante" />
             </FormGroup>
 
