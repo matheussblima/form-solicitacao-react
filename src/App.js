@@ -140,7 +140,7 @@ export default class Example extends React.Component {
           url:"https://cadastrosolicitacaoapi.herokuapp.com/send", 
           data: {
               name: "Matheus",   
-              email: "matheussblima@gmail.com",  
+              email: "matheussblima@gmail.com, leonardo.peixoto@timenow.com.br",  
               message: message
           }
         }).then((response)=>{
