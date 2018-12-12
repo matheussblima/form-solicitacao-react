@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { Button, Form, FormGroup, Label, Input, Alert, Card, CardHeader, Container } from 'reactstrap';
 import './App.css';
 
@@ -49,6 +50,8 @@ export default class Example extends React.Component {
 
     });
   }
+
+
 
   render() {
     const children = [];
@@ -127,6 +130,7 @@ export default class Example extends React.Component {
             </FormGroup>
 
             <h3>Dados dos Itens solicitados</h3>
+            <h6>Click Sobre o item para remover da lista</h6><br/>
 
             {children}
 
