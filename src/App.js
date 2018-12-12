@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Button, Form, FormGroup, Label, Input, Alert, Card, CardHeader, Container } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Alert, Card, CardHeader, Container, Modal, ModalBody, ModalHeader, Progress } from 'reactstrap';
 import './App.css';
 
 export default class Example extends React.Component {
@@ -12,12 +12,18 @@ export default class Example extends React.Component {
       descricaoItensSolicitados: '',
       qtdItens: [],
       descricaoitems: [],
-      visibleAlert: true
+      visibleAlert: true,
+      sendEmail: false,
+      progressSend: 0,
     }
   }
 
-  handleSubmit(e) {
+  //https://accounts.google.com/b/0/DisplayUnlockCaptcha precisa disso para desbloquear o email para enviar
+
+  async handleSubmit(e) {
+
     e.preventDefault();
+
     const nomeRequsitante = document.getElementById('nomeRequsitante').value;
     const empresaRequsitante = document.getElementById('empresaRequsitante').value;
     const telefoneRequsitante = document.getElementById('telefoneRequsitante').value;
@@ -36,107 +42,127 @@ export default class Example extends React.Component {
     const descricaoitems = this.state.descricaoitems;
     let tabelRowItensSolicitados = "";
 
-    for(let i = 0; i < this.state.qtdItens.length; i++) {
 
-      tabelRowItensSolicitados = tabelRowItensSolicitados +  
-      "<tr>" +
-        "<td>" +  qtdItens[i] + "</td>" +
-        "<td>" +  descricaoitems[i] + "</td>" +
-      "</tr>";
-
-    }
+    if(nomeRequsitante && empresaRequsitante
+      && telefoneRequsitante && emailRequsitante && ramalRequsitante
+      && nomeAprovador && emailAprovador && coletorAprovador
+      && plantaEmprestimo && localEmprestimo && dataEmprestimo
+      && qtdItens.length > 0 && descricaoitems.length > 0) {
 
 
-    const message = 
-    "<h3>Dados do Requisitante</h3>" +
-    "<table>" +
-      "<tr>" +
-        "<td>Nome:</td>" +
-        "<td>" +  nomeRequsitante + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Empresa:</td>" +
-        "<td>" +  empresaRequsitante + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Telefone:</td>" +
-        "<td>" +  telefoneRequsitante + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Email:</td>" +
-        "<td>" +  emailRequsitante + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Ramal:</td>" +
-        "<td>" +  ramalRequsitante + "</td>" +
-      "</tr>" +
-    "</table>" + 
+       await this.setState({ 
+          sendEmail: true,
+          progressSend: 20
+        });
 
-    "<h3>Dados do Aprovador Braskem</h3>" +
-    "<table>" +
-      "<tr>" +
-        "<td>Nome:</td>" +
-        "<td>" +  nomeAprovador + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Email:</td>" +
-        "<td>" +  emailAprovador + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Coletor:</td>" +
-        "<td>" +  coletorAprovador + "</td>" +
-      "</tr>" +
-    "</table>" + 
+        for(let i = 0; i < this.state.qtdItens.length; i++) {
     
-    "<h3>Local aplicação e prazo do empréstimo</h3>" +
-    "<table>" +
-      "<tr>" +
-        "<td>Planta:</td>" +
-        "<td>" +  plantaEmprestimo + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Local:</td>" +
-        "<td>" +  localEmprestimo + "</td>" +
-      "</tr>" +
-      "<tr>" +
-        "<td>Data:</td>" +
-        "<td>" +  dataEmprestimo + "</td>" +
-      "</tr>" +
-    "</table>" +
-    
-    "<h3>Dados dos Itens solicitados</h3>" +
-    "<table>" +
-      "<tr>" +
-        "<td><b>Quantidade</b></td>" +
-        "<td><b>Descrição</b></td>" +
-      "</tr>" +
-      tabelRowItensSolicitados +
-    "</table>";
-
-    console.log(message);
-
-   axios({
-        method: "POST", 
-        url:"http://localhost:3002/send", 
-        data: {
-            name: "Matheus",   
-            email: "matheussblima@gmail.com",  
-            message: message
+          tabelRowItensSolicitados = tabelRowItensSolicitados +  
+          "<tr>" +
+            "<td>" +  qtdItens[i] + "</td>" +
+            "<td>" +  descricaoitems[i] + "</td>" +
+          "</tr>";
         }
-    }).then((response)=>{
-        if (response.data.msg === 'success'){
-            alert("Mensagem enviada"); 
-            this.resetForm();
-        }else if(response.data.msg === 'fail'){
+    
+       await this.setState({ progressSend: 35 });
+
+    
+        const message = 
+        "<h3>Dados do Requisitante</h3>" +
+        "<table>" +
+          "<tr>" +
+            "<td>Nome:</td>" +
+            "<td>" +  nomeRequsitante + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Empresa:</td>" +
+            "<td>" +  empresaRequsitante + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Telefone:</td>" +
+            "<td>" +  telefoneRequsitante + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Email:</td>" +
+            "<td>" +  emailRequsitante + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Ramal:</td>" +
+            "<td>" +  ramalRequsitante + "</td>" +
+          "</tr>" +
+        "</table>" + 
+    
+        "<h3>Dados do Aprovador Braskem</h3>" +
+        "<table>" +
+          "<tr>" +
+            "<td>Nome:</td>" +
+            "<td>" +  nomeAprovador + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Email:</td>" +
+            "<td>" +  emailAprovador + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Coletor:</td>" +
+            "<td>" +  coletorAprovador + "</td>" +
+          "</tr>" +
+        "</table>" + 
+        
+        "<h3>Local aplicação e prazo do empréstimo</h3>" +
+        "<table>" +
+          "<tr>" +
+            "<td>Planta:</td>" +
+            "<td>" +  plantaEmprestimo + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Local:</td>" +
+            "<td>" +  localEmprestimo + "</td>" +
+          "</tr>" +
+          "<tr>" +
+            "<td>Data:</td>" +
+            "<td>" +  dataEmprestimo + "</td>" +
+          "</tr>" +
+        "</table>" +
+        
+        "<h3>Dados dos Itens solicitados</h3>" +
+        "<table>" +
+          "<tr>" +
+            "<td><b>Quantidade</b></td>" +
+            "<td><b>Descrição</b></td>" +
+          "</tr>" +
+          tabelRowItensSolicitados +
+        "</table>";
+
+        await this.setState({ progressSend: 50 });
+    
+        await axios({
+          method: "POST", 
+          url:"https://cadastrosolicitacaoapi.herokuapp.com/send", 
+          data: {
+              name: "Matheus",   
+              email: "matheussblima@gmail.com",  
+              message: message
+          }
+        }).then((response)=>{
+          if (response.data.msg === 'success'){
+              this.resetForm();
+          }else if(response.data.msg === 'fail'){
             alert("Erro ao enviar a mesagem");
-        }
-    }); 
+          }
+        });
+
+         await this.setState({ progressSend: 100 });
+         await this.setState({ sendEmail: false });
+
+        } else {
+          alert("Todos os campos precisam ser preenchido!");
+      }
+
   }
 
   resetForm(){
     document.getElementById('form-cadastro').reset();
   }
-
 
   clickButtonAddItem() {
     const { qtdItensSolicitados, descricaoItensSolicitados, qtdItens, descricaoitems } = this.state;
@@ -173,7 +199,6 @@ export default class Example extends React.Component {
   }
 
 
-
   render() {
     const children = [];
 
@@ -187,8 +212,18 @@ export default class Example extends React.Component {
           );
     }
 
+    console.log(this.state.sendEmail);
+
     return (
       <Container>
+
+        <Modal className="modal-dialog" isOpen={this.state.sendEmail}>
+          <ModalHeader>Enviando...</ModalHeader>
+          <ModalBody>
+            <Progress animated color="success" value={ this.state.progressSend } />
+          </ModalBody>
+        </Modal>
+
         <Card className="card-container">
           <CardHeader className="card-header">
             <h4>
@@ -265,7 +300,7 @@ export default class Example extends React.Component {
               <Button onClick={ this.clickButtonAddItem.bind(this) } className="button-add_item">Adicionar Item</Button>
             </FormGroup>
 
-            <Button>Enviar</Button>
+            <Button color="success" >Enviar</Button>
           </Form>
         </Card>
       </Container>
