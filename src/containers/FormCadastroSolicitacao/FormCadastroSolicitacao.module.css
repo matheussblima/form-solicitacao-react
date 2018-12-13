@@ -1,41 +1,91 @@
+.input {
+  background-color: #e8ebed;
+  border: none;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.circle {
+  height: 30px;
+  width: 30px;
+  color: #3ac162;
+  border-radius: 50%;
+  border: 2px solid #3ac162;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 10px;
+  margin-top: 2px;
+}
+
+.alertListConteiner {
+  display: flex;
+  flex-direction: row;
+}
+
+.alertList {
+  margin-right: 10px;
+}
+
+.titleHeaderForm {
+  display: flex;
+  flex-direction: row;
+}
+
 .formContainer {
-    padding: 32px;
-  }
-  
-  .cardContainer {
-    margin-top: 50px;
-    margin-bottom:50px;
-  }
-  
-  .cardHeader {
-    background-color: #029341;
-    color: white;
-  }
-  
-  .buttonAddItem {
-    margin-top:20px ;
-    margin-bottom: 30px;
-  }
-  
-  .buttonRemove {
-    background-color: transparent;
-    border: none;
-  }
-  
-  .buttonRemove:hover {
-    background-color: rgb(250, 7, 27);
-    border: none;
-  }
-  
-  .modalDialog {
-    min-height: calc(100vh - 60px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: auto;
-  }
-  @media(max-width: 768px) {
+  padding: 32px;
+}
+
+.cardContainer {
+  margin-top: 50px;
+  margin-bottom:50px;
+  border: none;
+  border-radius: 10px;
+}
+
+.cardHeader {
+  background-color: #3ac162;
+  color: white;
+  border-radius: 10px;
+}
+
+.titleCard {
+  text-align: center;
+}
+
+.buttonAddItem {
+  margin-top: 32px;
+}
+
+.buttonRemove {
+  background-color: transparent;
+  border: none;
+}
+
+.buttonEnviarContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.buttonEnviar {
+  padding: 10px 30px 10px 30px;
+  font-size: 15pt;
+}
+
+.buttonRemove:hover {
+  background-color: rgb(250, 7, 27);
+  border: none;
+}
+
+.modalDialog {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: auto;
+}
+@media(max-width: 768px) {
   .modalDialog {
     min-height: calc(100vh - 20px);
   }
-  }
+}
