@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Container, Navbar } from 'reactstrap';
+import { Menu } from '../../components';
 
 
 
@@ -7,9 +7,7 @@ class Home extends Component {
     render() {
         return(
             <div>
-                <Navbar  color="light" light expand="md">
-                    <NavbarBrand href="/">reactstrap</NavbarBrand>
-                </Navbar>
+                <Menu />
             </div>
         );
     }
