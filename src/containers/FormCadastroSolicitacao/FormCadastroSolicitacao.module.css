@@ -1,0 +1,41 @@
+.formContainer {
+    padding: 32px;
+  }
+  
+  .cardContainer {
+    margin-top: 50px;
+    margin-bottom:50px;
+  }
+  
+  .cardHeader {
+    background-color: #029341;
+    color: white;
+  }
+  
+  .buttonAddItem {
+    margin-top:20px ;
+    margin-bottom: 30px;
+  }
+  
+  .buttonRemove {
+    background-color: transparent;
+    border: none;
+  }
+  
+  .buttonRemove:hover {
+    background-color: rgb(250, 7, 27);
+    border: none;
+  }
+  
+  .modalDialog {
+    min-height: calc(100vh - 60px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: auto;
+  }
+  @media(max-width: 768px) {
+  .modalDialog {
+    min-height: calc(100vh - 20px);
+  }
+  }
