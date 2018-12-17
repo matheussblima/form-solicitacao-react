@@ -44,9 +44,9 @@ export default class FormCadastroSolicitacao extends React.Component {
     this.timer = this.timer.bind(this);
   }
 
-  componentDidMount() {
+  componentDidMount() { 
     var intervalId = setInterval(this.timer, 180);
-    this.setState({intervalId: intervalId});
+    this.setState({ intervalId: intervalId });
   }
 
   componentWillUnmount() {
