@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand, NavbarToggler, Nav, NavLink, NavItem, Collapse } from 'reactstrap';
+import { Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
 import images from '../../config/images';
 import styles from './Menu.module.css';
 
