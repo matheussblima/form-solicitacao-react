@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import FileDownload from 'js-file-download';
 import { 
   Col,
   Row,
@@ -15,13 +16,17 @@ import {
   Modal,
   ModalBody,
   ModalHeader, 
+  ModalFooter,
   Progress 
   } from 'reactstrap';
+import validator from 'validator';
 import styles from './FormCadastroSolicitacao.module.css';
 
 export default class FormCadastroSolicitacao extends React.Component {
   constructor(props) {
     super(props)
+
+    var today = new Date().toJSON().slice(0,10);
 
     this.state = {
       qtdItensSolicitados: 0,
@@ -29,8 +34,30 @@ export default class FormCadastroSolicitacao extends React.Component {
       qtdItens: [],
       descricaoitems: [],
       visibleAlert: true,
+      sendingEmail: false,
+      sendEmailError: false,
       sendEmail: false,
       progressSend: 0,
+      dateNow: today,
+    }
+
+    this.timer = this.timer.bind(this);
+  }
+
+  componentDidMount() {
+    var intervalId = setInterval(this.timer, 180);
+    this.setState({intervalId: intervalId});
+  }
+
+  componentWillUnmount() {
+      clearInterval(this.state.intervalId);
+  }
+
+  timer() {
+    this.setState({ progressSend: this.state.progressSend + 1 });
+
+    if(this.state.progressSend === 100) {
+      this.setState({ progressSend: 0 });
     }
   }
 
@@ -52,7 +79,7 @@ export default class FormCadastroSolicitacao extends React.Component {
 
     const plantaEmprestimo = document.getElementById('plantaEmprestimo').value;
     const localEmprestimo = document.getElementById('localEmprestimo').value;
-    const dataEmprestimo = document.getElementById('dataEmprestimo').value;
+    const dataEmprestimo = document.getElementById('dataEmprestimo').value.toString();
 
     const qtdItens = this.state.qtdItens;
     const descricaoitems = this.state.descricaoitems;
@@ -65,10 +92,19 @@ export default class FormCadastroSolicitacao extends React.Component {
       && plantaEmprestimo && localEmprestimo && dataEmprestimo
       && qtdItens.length > 0 && descricaoitems.length > 0) {
 
+  
+      if (!validator.isEmail(emailAprovador)) {
+        alert("Verifique se o email do aprovador Braskem está correto");
+        return;
+      }
+
+      if (!validator.isEmail(emailRequsitante)) {
+        alert("Verifique se o email do requisitante está correto");
+        return;
+      }
 
        await this.setState({ 
-          sendEmail: true,
-          progressSend: 20
+          sendingEmail: true,
         });
 
         for(let i = 0; i < this.state.qtdItens.length; i++) {
@@ -79,10 +115,7 @@ export default class FormCadastroSolicitacao extends React.Component {
             "<td>" +  descricaoitems[i] + "</td>" +
           "</tr>";
         }
-    
-       await this.setState({ progressSend: 35 });
 
-    
         const message = 
         "<h3>Dados do Requisitante</h3>" +
         "<table>" +
@@ -148,27 +181,37 @@ export default class FormCadastroSolicitacao extends React.Component {
           "</tr>" +
           tabelRowItensSolicitados +
         "</table>";
-
-        await this.setState({ progressSend: 50 });
     
         await axios({
           method: "POST", 
-          url:"https://cadastrosolicitacaoapi.herokuapp.com/send", 
+          url:"http://localhost:8080/send", 
           data: {
-              name: "Matheus",   
-              email: "matheussblima@gmail.com, leonardo.peixoto@timenow.com.br",  
+              nomeRequsitante,
+              empresaRequsitante,
+              telefoneRequsitante, 
+              emailRequsitante,
+              ramalRequsitante,
+              nomeAprovador,
+              emailAprovador, 
+              coletorAprovador,
+              plantaEmprestimo,
+              localEmprestimo,
+              dataEmprestimo,
+              qtdItens,
+              descricaoitems,   
               message: message
           }
         }).then((response)=>{
           if (response.data.msg === 'success'){
               this.resetForm();
+              this.setState({sendingEmail: false});
+              this.setState({sendEmail: true});
           }else if(response.data.msg === 'fail'){
-            alert("Erro ao enviar a mesagem");
+            this.setState({sendingEmail: false});
+            this.setState({sendEmail: false});
+            this.setState({sendEmailError: true});
           }
         });
-
-         await this.setState({ progressSend: 100 });
-         await this.setState({ sendEmail: false });
 
         } else {
           alert("Todos os campos precisam ser preenchido!");
@@ -205,6 +248,17 @@ export default class FormCadastroSolicitacao extends React.Component {
     }
   }
 
+  async downloadFile() {
+    let response = await axios({
+      method: "GET", 
+      url:"http://localhost:8080/downloadExel", 
+      responseType: 'blob', 
+    });
+
+    await FileDownload(response.data, 'formularioSolicitacao.xlsx');
+    await this.setState({sendEmail: false});
+  }
+
   removeItem(index) {
 
     let qtdItensArray = this.state.qtdItens;
@@ -218,7 +272,6 @@ export default class FormCadastroSolicitacao extends React.Component {
       descricaoitems: descricaoitemsArray
     });
   }
-
 
   render() {
     const children = [];
@@ -235,11 +288,35 @@ export default class FormCadastroSolicitacao extends React.Component {
       <Container>
 
         { /* Modal de Envio*/ }
-        <Modal className={styles.modalDialog} isOpen={this.state.sendEmail}>
+        <Modal className={styles.modalDialog} isOpen={ this.state.sendingEmail }>
           <ModalHeader>Enviando...</ModalHeader>
           <ModalBody>
             <Progress animated color="success" value={ this.state.progressSend } />
           </ModalBody>
+        </Modal>
+
+        { /* Modal de Error*/ }
+        <Modal className={styles.modalDialog} isOpen={ this.state.sendEmailError }>
+          <ModalHeader>Erro</ModalHeader>
+          <ModalBody>
+            <h6>Ocorreu um erro ao enviar os dados. Por favor tente novamente</h6>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="secondary" onClick={() => {this.setState({sendEmailError: false})}}>Fechar</Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal className={styles.modalDialog} isOpen={ this.state.sendEmail }>
+          <ModalHeader>Download de Arquivo</ModalHeader>
+          <ModalBody>
+            <Col>
+              <h6>Se desejar baixar o arquivo Exel com os dados informados click em Download.</h6>
+            </Col>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="primary" onClick={this.downloadFile.bind(this)}>Download</Button>{' '}
+            <Button color="secondary" onClick={() => {this.setState({sendEmail: false})}}>Fechar</Button>
+          </ModalFooter>
         </Modal>
 
         <Card className={styles.cardContainer}>
@@ -265,30 +342,30 @@ export default class FormCadastroSolicitacao extends React.Component {
               <Col>
                 <FormGroup>
                   <Label for="nomeRequsitante">Nome</Label>
-                  <Input className={styles.input} type="text" name="nomeRequisitante" id="nomeRequsitante" />
+                  <Input className={styles.input} required type="text" name="nomeRequisitante" id="nomeRequsitante" />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="emailRequsitante">Email</Label>
-                  <Input className={styles.input} type="email" name="emailRequisitante" id="emailRequsitante" />
+                  <Input className={styles.input} required type="email" name="emailRequisitante" id="emailRequsitante" />
                 </FormGroup>
               </Col>
             </Row>
 
             <FormGroup>
               <Label for="empresaRequsitante">Empresa Parceira</Label>
-              <Input className={styles.input} type="text" name="empresaParceiraRequisitante" id="empresaRequsitante" />
+              <Input className={styles.input} required type="text" name="empresaParceiraRequisitante" id="empresaRequsitante" />
             </FormGroup>
 
             <FormGroup>
               <Label for="telefoneRequsitante">Telefone</Label>
-              <Input className={styles.input} type="tel" name="telefoneRequisitante" id="telefoneRequsitante" />
+              <Input className={styles.input} required type="tel" name="telefoneRequisitante" id="telefoneRequsitante" />
             </FormGroup>
            
             <FormGroup>
               <Label for="ramalRequsitante">Ramal</Label>
-              <Input className={styles.input} type="number" name="ramalRequisitante" id="ramalRequsitante" />
+              <Input className={styles.input} required type="number" name="ramalRequisitante" id="ramalRequsitante" />
             </FormGroup>
 
             
@@ -304,20 +381,20 @@ export default class FormCadastroSolicitacao extends React.Component {
               <Col>
                 <FormGroup>
                   <Label for="nomeAprovador">Nome</Label>
-                  <Input className={styles.input} type="text" name="nomeAprovador" id="nomeAprovador" />
+                  <Input className={styles.input} required type="text" name="nomeAprovador" id="nomeAprovador" />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="emailAprovador">Email</Label>
-                  <Input className={styles.input} type="email" name="emailAprovador" id="emailAprovador" />
+                  <Input className={styles.input} required type="email" name="emailAprovador" id="emailAprovador" />
                 </FormGroup>
               </Col>
             </Row>
 
             <FormGroup>
               <Label for="coletorAprovador">Coletor de custo</Label>
-              <Input className={styles.input} type="text" name="coletorAprovador" id="coletorAprovador" />
+              <Input className={styles.input} required type="text" name="coletorAprovador" id="coletorAprovador" />
             </FormGroup>
 
             <br /><hr />
@@ -333,20 +410,20 @@ export default class FormCadastroSolicitacao extends React.Component {
               <Col>
                 <FormGroup>
                   <Label for="plantaEmprestimo">Planta</Label>
-                  <Input className={styles.input} type="text" name="plantaEmprestimo" id="plantaEmprestimo" />
+                  <Input className={styles.input} required type="text" name="plantaEmprestimo" id="plantaEmprestimo" />
                 </FormGroup>
               </Col>
               <Col>
                 <FormGroup>
                   <Label for="localEmprestimo">Local</Label>
-                  <Input className={styles.input} type="text" name="localEmprestimo" id="localEmprestimo" />
+                  <Input className={styles.input} required type="text" name="localEmprestimo" id="localEmprestimo" />
                 </FormGroup>
               </Col>
             </Row>
 
             <FormGroup>
               <Label for="dataEmprestimo">Data para devolução</Label>
-              <Input className={styles.input} type="date" name="dataEmprestimo" id="dataEmprestimo" />
+              <Input className={styles.input} min={this.state.dateNow} required type="date" name="dataEmprestimo" id="dataEmprestimo" />
             </FormGroup>
 
             <br /><hr />

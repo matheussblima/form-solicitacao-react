@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Container } from 'reactstrap'; 
+import { Container } from 'reactstrap'; 
 import { Menu } from '../../components';
 import { FormCadastroSolicitacao } from '../../containers';
 import styles from './Home.module.css';
