@@ -25,13 +25,6 @@ class Menu extends Component {
                 <Navbar className={styles.navbarContainer} light expand="md">
                     <NavbarBrand href="/"><img className={styles.imageLogo} alt="logo" src={images.logo}/></NavbarBrand>
                     <NavbarToggler onClick={this.toggle} />
-                    <Collapse isOpen={this.state.isOpen} navbar>
-                        <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <NavLink href="/configuracoes/">Configurações</NavLink>
-                            </NavItem>
-                        </Nav>
-                    </Collapse>
                 </Navbar>
             </div>
         );
