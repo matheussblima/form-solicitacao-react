@@ -184,7 +184,7 @@ export default class FormCadastroSolicitacao extends React.Component {
     
         await axios({
           method: "POST", 
-          url:"http://localhost:8080/send", 
+          url:"https://cadastrosolicitacaoapi.herokuapp.com/send", 
           data: {
               nomeRequsitante,
               empresaRequsitante,
@@ -251,7 +251,7 @@ export default class FormCadastroSolicitacao extends React.Component {
   async downloadFile() {
     let response = await axios({
       method: "GET", 
-      url:"http://localhost:8080/downloadExel", 
+      url:"https://cadastrosolicitacaoapi.herokuapp.com/downloadExel", 
       responseType: 'blob', 
     });
 
