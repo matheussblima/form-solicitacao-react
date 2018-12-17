@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, NavbarBrand, NavbarToggler } from 'reactstrap';
+import { Navbar, NavbarBrand } from 'reactstrap';
 import images from '../../config/images';
 import styles from './Menu.module.css';
 
@@ -24,7 +24,6 @@ class Menu extends Component {
             <div>
                 <Navbar className={styles.navbarContainer} light expand="md">
                     <NavbarBrand href="/"><img className={styles.imageLogo} alt="logo" src={images.logo}/></NavbarBrand>
-                    <NavbarToggler onClick={this.toggle} />
                 </Navbar>
             </div>
         );

@@ -331,10 +331,10 @@ export default class FormCadastroSolicitacao extends React.Component {
           { /* Formulario */ }
           <Form className={styles.formContainer}  id="form-cadastro"  onSubmit={this.submit.bind(this)} method="POST">
             
-            <div className={styles.titleHeaderForm}>
-              <span className={styles.circle}><b>1</b></span>
-              <h3>Dados do Requisitante</h3>
-            </div>
+            <Row>
+                <span className={styles.circle}><b>1</b></span>
+                <h3>Dados do Requisitante</h3>
+            </Row>
 
             <br />
 
@@ -370,10 +370,10 @@ export default class FormCadastroSolicitacao extends React.Component {
 
             
             <br /><hr />
-            <div className={styles.titleHeaderForm}>
+            <Row>
               <span className={styles.circle}><b>2</b></span>
               <h3>Dados do Aprovador Braskem</h3>
-            </div>
+            </Row>
 
             <br />
 
@@ -399,10 +399,10 @@ export default class FormCadastroSolicitacao extends React.Component {
 
             <br /><hr />
           
-            <div className={styles.titleHeaderForm}>
+            <Row>
               <span className={styles.circle}><b>3</b></span>
               <h3>Local aplicação e prazo do empréstimo</h3>
-            </div>
+            </Row>
 
             <br />
             
@@ -428,10 +428,10 @@ export default class FormCadastroSolicitacao extends React.Component {
 
             <br /><hr />
                     
-            <div className={styles.titleHeaderForm}>
+            <Row>
               <span className={styles.circle}><b>4</b></span>
               <h3>Dados dos Itens solicitados</h3>
-            </div>
+            </Row>
 
             <br />
 
